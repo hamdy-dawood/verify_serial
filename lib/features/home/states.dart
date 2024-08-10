@@ -13,3 +13,17 @@ class ProfileFailedState extends HomeStates {
 
   ProfileFailedState({required this.msg});
 }
+
+//=========================== VERIFY SERIAL =======================//
+
+class VerifyLoadingState extends HomeStates {}
+
+class VerifySuccessState extends HomeStates {}
+
+class VerifyNetworkErrorState extends HomeStates {}
+
+class VerifyFailedState extends HomeStates {
+  final String msg;
+
+  VerifyFailedState({required this.msg});
+}

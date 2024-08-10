@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../core/helpers/navigator.dart';
 import '../../core/theming/colors.dart';
 import '../../core/widgets/custom_elevated.dart';
 import '../../core/widgets/custom_text.dart';
 import '../../core/widgets/custom_text_form_field.dart';
 import '../../core/widgets/default_flushbar.dart';
-import 'barcode_scanner_screen.dart';
+import '../scanner/view.dart';
 import 'cubit.dart';
 import 'states.dart';
 
@@ -92,10 +91,17 @@ class _BarCodeTextField extends StatelessWidget {
       },
       isLastInput: true,
       suffixIcon: IconButton(
-        onPressed: () {
-          MagicRouter.navigateTo(
-            page: BarcodeScannerScreen(oldContext: context),
+        onPressed: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const BarcodeScannerScreen(),
+            ),
           );
+
+          if (result != null) {
+            cubit.barcodeController.text = result;
+          }
         },
         icon: Icon(
           Icons.barcode_reader,

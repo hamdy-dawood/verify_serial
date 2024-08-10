@@ -19,7 +19,6 @@ class CheckCubit extends Cubit<CheckStates> {
 
   var barcodeController = TextEditingController();
 
-  final scannerScaffoldKey = GlobalKey<ScaffoldState>();
 
   Future<void> check() async {
     emit(CheckLoadingState());
@@ -68,5 +67,11 @@ class CheckCubit extends Cubit<CheckStates> {
         emit(NetworkErrorState());
     }
     logger.e(e);
+  }
+
+  @override
+  Future<void> close() {
+    barcodeController.dispose();
+    return super.close();
   }
 }

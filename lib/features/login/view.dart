@@ -9,7 +9,7 @@ import '../../core/widgets/custom_elevated.dart';
 import '../../core/widgets/custom_text.dart';
 import '../../core/widgets/custom_text_form_field.dart';
 import '../../core/widgets/default_flushbar.dart';
-import '../check/barcode_scanner_screen.dart';
+import '../scanner/view.dart';
 import '../check/view.dart';
 import 'cubit.dart';
 import 'states.dart';
@@ -80,7 +80,6 @@ class _LoginBody extends StatelessWidget {
                       color: AppColors.mainColor,
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
-                      textDecoration: TextDecoration.underline,
                     ),
                   ),
                 ),

@@ -4,8 +4,6 @@ class CheckInitialState extends CheckStates {}
 
 class CheckLoadingState extends CheckStates {}
 
-
-
 class NetworkErrorState extends CheckStates {}
 
 class CheckFailedState extends CheckStates {
@@ -17,4 +15,3 @@ class CheckFailedState extends CheckStates {
 class CheckApprovedState extends CheckStates {}
 
 class CheckFailedApprovedState extends CheckStates {}
-

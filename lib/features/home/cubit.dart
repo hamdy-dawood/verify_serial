@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logger/logger.dart';
 
@@ -59,5 +61,60 @@ class HomeCubit extends Cubit<HomeStates> {
         emit(NetworkErrorState());
     }
     logger.e(e);
+  }
+
+  //=========================== VERIFY SERIAL =======================//
+
+  final fieldController = TextEditingController();
+
+  Future<void> verify() async {
+      emit(VerifyLoadingState());
+      try {
+        final response = await dioManager.post(
+          UrlsStrings.verifyCodeUrl,
+          data: json.encode({
+            "serialNo": fieldController.text,
+          }),
+        );
+
+        if (response.statusCode == 201) {
+          emit(VerifySuccessState());
+
+          fieldController.clear();
+          logger.i(response.data);
+        } else {
+          emit(VerifyFailedState(msg: response.data["message"]));
+        }
+      } on DioException catch (e) {
+        handleVerifyDioException(e);
+      } catch (e) {
+        emit(VerifyFailedState(msg: 'An unknown error: $e'));
+        logger.e(e);
+      }
+  }
+
+  void handleVerifyDioException(DioException e) {
+    switch (e.type) {
+      case DioExceptionType.cancel:
+        emit(VerifyFailedState(msg: "Request was cancelled"));
+        break;
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.receiveTimeout:
+      case DioExceptionType.sendTimeout:
+        emit(VerifyNetworkErrorState());
+        break;
+      case DioExceptionType.badResponse:
+        emit(VerifyFailedState(msg: e.response?.data["message"]));
+        break;
+      default:
+        emit(VerifyNetworkErrorState());
+    }
+    logger.e(e);
+  }
+
+  @override
+  Future<void> close() {
+    fieldController.dispose();
+    return super.close();
   }
 }

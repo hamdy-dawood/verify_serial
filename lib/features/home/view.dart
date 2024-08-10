@@ -2,19 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:verify_serial/core/widgets/emit_failed_item.dart';
-import 'package:verify_serial/core/widgets/svg_icons.dart';
 
 import '../../core/helpers/cache_helper.dart';
 import '../../core/helpers/navigator.dart';
-import '../../core/theming/assets.dart';
 import '../../core/theming/colors.dart';
 import '../../core/widgets/custom_text.dart';
 import '../../core/widgets/dialog.dart';
 import '../../core/widgets/emit_network_item.dart';
 import '../login/view.dart';
-import '../verify/view.dart';
 import 'cubit.dart';
 import 'states.dart';
+import 'widgets/verify_button.dart';
+import 'widgets/verify_text_field.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -33,13 +32,15 @@ class _HomeBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cubit = BlocProvider.of<HomeCubit>(context);
+
     return Scaffold(
       backgroundColor: AppColors.white,
       appBar: AppBar(
         backgroundColor: AppColors.white,
         actions: [
           Padding(
-            padding: EdgeInsets.only(left: 5.w),
+            padding: EdgeInsets.only(left: 10.w),
             child: GestureDetector(
               onTap: () {
                 alertDialog(
@@ -57,10 +58,11 @@ class _HomeBody extends StatelessWidget {
                   },
                 );
               },
-              child: Icon(
-                Icons.login,
+              child: CustomText(
+                text: "خروج",
                 color: AppColors.mainColor,
-                size: 30,
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
               ),
             ),
           ),
@@ -87,40 +89,32 @@ class _HomeBody extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(height: 0.2.sh),
-                    SvgIcon(
-                      icon: AssetsStrings.user,
-                      color: AppColors.mainColor,
-                      height: 80.h,
-                    ),
-                    40.verticalSpace,
+                    SizedBox(height: 0.1.sh),
                     CustomText(
-                      text: "${CacheHelper.get(key: "user_name")}",
+                      text: "مرحبا بك ${CacheHelper.get(key: "user_name")}",
                       color: AppColors.mainColor,
                       fontSize: 30,
                       fontWeight: FontWeight.w700,
                       textAlign: TextAlign.center,
                       maxLines: 5,
                     ),
-                    30.verticalSpace,
-                    IconButton(
-                      onPressed: () {
-                        MagicRouter.navigateTo(
-                          page: const VerifyView(),
-                        );
+                    SizedBox(height: 0.1.sh),
+                    BlocBuilder<HomeCubit, HomeStates>(
+                      builder: (context, state) {
+                        return VerifyTextField(cubit: cubit);
                       },
-                      icon: Icon(
-                        Icons.add_circle_outline,
-                        color: AppColors.black,
-                        size: 100,
-                      ),
-                    )
+                    ),
                   ],
                 ),
               ),
             ),
           );
         },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Padding(
+        padding: EdgeInsets.all(20.h),
+        child: VerifyButton(cubit: cubit),
       ),
     );
   }
